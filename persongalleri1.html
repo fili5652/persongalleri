@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Persongalleri</title>
+
+    <style>
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+      section {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 10px;
+      }
+      article {
+        display: block;
+        border: 1px solid rgb(233, 222, 65);
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Persongalleri</h1>
+
+    <main>
+      <section class="liste"></section>
+      <template>
+        <article>
+          <img src="faces/" alt="" class="profilbillede" />
+          <h2 class="fornavn"></h2>
+          <p class="efternavn">efternavn:</p>
+          <p class="email">email:</p>
+        </article>
+      </template>
+    </main>
+
+    <script>
+      const url = "https://tema7-d6ad.restdb.io/rest/medlemmer";
+      const options = {
+        headers: {
+          "x-apikey": "61fcf7e43f215f310a37be4e",
+        },
+      };
+      const main = document.querySelector("section");
+      const template = document.querySelector("template").content;
+      // Her henter jeg dataen fra persongalleriet og skriver den tilhørende kode ind
+
+      async function hentData() {
+        const resspons = await fetch(url, options);
+        const json = await resspons.json();
+        vis(json);
+      }
+
+      // her skriver jeg data ind som ligger i array som vi looper igennem
+
+      function vis(json) {
+        console.log(json);
+        json.forEach((person) => {
+          const klon = template.cloneNode(true);
+          klon.querySelector(
+            "h2"
+          ).textContent = `${person.fornavn} ${person.efternavn}`;
+
+          klon.querySelector(".profilbillede").src =
+            "faces/" + person.profilbillede;
+          klon.querySelector(".fornavn").textContent = person.fornavn;
+          klon.querySelector(".email").textContent = person.email;
+          klon.querySelector(".efternavn").textContent = person.efternavn;
+          main.appendChild(klon);
+        });
+      }
+
+      hentData();
+
+      //   https://persongalleri-5d3e.restdb.io/media/
+    </script>
+  </body>
+</html>
